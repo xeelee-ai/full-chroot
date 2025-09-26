@@ -3,7 +3,7 @@ set -e
 
 # Check if ROOTFS is set as environment variable, otherwise use default
 if [ -z "$ROOTFS" ]; then
-    ROOTFS="./ubuntu-base-24.04.3"
+    ROOTFS="../ubuntu-base-24.04.3-root_fs"
 fi
 
 if [ "$EUID" -ne 0 ]; then
@@ -45,12 +45,12 @@ chroot "$ROOTFS" /bin/bash -c "
     
     # Check system status
     echo 'System status check:'
-    echo '- Current directory: \$(pwd)'
-    echo '- Process ID: \$\
-    echo '- User: \$(whoami)'
+    echo '- Current directory: '"'"'\$(pwd)'"'"'
+    echo '- Process ID: \$\$
+    echo '- User: '"'"'\$(whoami)'"'"'
     echo ''
     echo 'Mount points check:'
-    mount | grep -E '(proc|sys|dev|run|tmp)' | head -5
+    mount | grep -E 'proc|sys|dev|run|tmp' | head -5
     echo ''
     echo 'Distribution info:'
     lsb_release -a 2>/dev/null || cat /etc/os-release 2>/dev/null || echo 'Unable to get system info'
