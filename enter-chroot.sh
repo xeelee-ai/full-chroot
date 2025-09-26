@@ -44,10 +44,6 @@ chroot "$ROOTFS" /bin/bash -c "
     cd /
     
     # Check system status
-    echo 'System status check:'
-    echo '- Current directory: '"'"'\$(pwd)'"'"'
-    echo '- Process ID: \$\$
-    echo '- User: '"'"'\$(whoami)'"'"'
     echo ''
     echo 'Mount points check:'
     mount | grep -E 'proc|sys|dev|run|tmp' | head -5
