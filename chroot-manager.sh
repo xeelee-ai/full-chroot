@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default root filesystem path
-DEFAULT_ROOTFS="../root_fs"
+DEFAULT_ROOTFS="../ubuntu-base-24.04.3-root_fs"
 ROOTFS="$DEFAULT_ROOTFS"
 
 # Check if a custom rootfs path was provided
