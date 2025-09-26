@@ -1,15 +1,18 @@
 #!/bin/bash
 set -e
 
-ROOTFS="./ubuntu-base-24.04.3"
+# Check if ROOTFS is set as environment variable, otherwise use default
+if [ -z "$ROOTFS" ]; then
+    ROOTFS="./ubuntu-base-24.04.3"
+fi
 
 if [ "$EUID" -ne 0 ]; then
     echo "Root privileges required"
-    exec sudo bash "$0" "$@"
+    exec sudo ROOTFS="$ROOTFS" bash "$0" "$@"
     exit
 fi
 
-echo "Cleaning up chroot environment..."
+echo "Cleaning up chroot environment at $ROOTFS..."
 
 # Unmount filesystems in order (to avoid dependency issues)
 for mount_point in \

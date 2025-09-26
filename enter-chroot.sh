@@ -1,17 +1,20 @@
 #!/bin/bash
 set -e
 
-ROOTFS="./ubuntu-base-24.04.3"
+# Check if ROOTFS is set as environment variable, otherwise use default
+if [ -z "$ROOTFS" ]; then
+    ROOTFS="./ubuntu-base-24.04.3"
+fi
 
 if [ "$EUID" -ne 0 ]; then
     echo "Root privileges required"
-    exec sudo bash "$0" "$@"
+    exec sudo ROOTFS="$ROOTFS" bash "$0" "$@"
     exit
 fi
 
 # Run full mount first
 echo "Preparing chroot environment..."
-bash full-chroot.sh "$ROOTFS"
+ROOTFS="$ROOTFS" bash full-chroot.sh "$ROOTFS"
 
 echo "Entering chroot environment..."
 echo "========================================"
@@ -22,6 +25,9 @@ export SYSTEMD_IGNORE_CHROOT=0
 
 # Enter chroot (maximum compatibility)
 chroot "$ROOTFS" /bin/bash -c "
+    # Set terminal prompt to show chroot status
+    export PS1='(chroot) \u@\h:\w\$ '
+    
     # Set terminal
     export TERM=xterm-256color
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -31,7 +37,7 @@ chroot "$ROOTFS" /bin/bash -c "
     export LC_ALL=C.UTF-8
     
     # Initialize environment
-    source /etc/profile
+    source /etc/profile 2>/dev/null || true
     source ~/.bashrc 2>/dev/null || true
     
     # Change to root directory
@@ -40,7 +46,7 @@ chroot "$ROOTFS" /bin/bash -c "
     # Check system status
     echo 'System status check:'
     echo '- Current directory: \$(pwd)'
-    echo '- Process ID: \$\$'
+    echo '- Process ID: \$\
     echo '- User: \$(whoami)'
     echo ''
     echo 'Mount points check:'

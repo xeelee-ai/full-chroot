@@ -3,14 +3,17 @@ set -e
 
 echo "Setting up full chroot environment..."
 
-# Check arguments
-if [ -z "$1" ]; then
+# Check if ROOTFS is set as environment variable, otherwise use argument
+if [ -n "$ROOTFS" ]; then
+    echo "Using ROOTFS from environment: $ROOTFS"
+elif [ -n "$1" ]; then
+    ROOTFS=$(realpath "$1")
+    echo "Using ROOTFS from argument: $ROOTFS"
+else
     echo "Usage: $0 <root filesystem path>"
     echo "Example: $0 ./ubuntu-base-24.04.3"
     exit 1
 fi
-
-ROOTFS=$(realpath "$1")
 
 if [ ! -d "$ROOTFS" ]; then
     echo "Error: Directory $ROOTFS does not exist"

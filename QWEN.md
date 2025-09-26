@@ -1,19 +1,20 @@
-# Full Chroot Environment Setup
+# Project Context: Full Chroot Environment Setup
 
-This project provides a complete chroot environment setup with maximum compatibility for running system services including systemd.
+## Project Overview
 
-## Scripts Overview
+This project provides a complete chroot environment setup with maximum compatibility for running system services including systemd. It creates an isolated Linux environment that closely mimics a real system, allowing you to run services and applications in a contained space.
 
-1. `full-chroot.sh` - Sets up all necessary mounts and device files for a complete chroot environment
-2. `enter-chroot.sh` - Enters the chroot environment with proper environment variables
-3. `cleanup-chroot.sh` - Cleans up all mounts created by the setup script
-4. `chroot-manager.sh` - A unified interface to manage the chroot environment
-5. `check-chroot.sh` - Verification script to check the integrity of the chroot environment
+## Key Components
 
-## Usage
+1. **full-chroot.sh** - Sets up all necessary mounts and device files for a complete chroot environment
+2. **enter-chroot.sh** - Enters the chroot environment with proper environment variables
+3. **cleanup-chroot.sh** - Cleans up all mounts created by the setup script
+4. **chroot-manager.sh** - A unified interface to manage the chroot environment
+5. **check-chroot.sh** - Verification script to check the integrity of the chroot environment
+
+## Usage Patterns
 
 ### Quick Start
-
 ```bash
 # Make all scripts executable
 chmod +x *.sh
@@ -78,7 +79,6 @@ When inside the chroot environment, the terminal prompt will show `(chroot)` to 
 ## Verification
 
 After entering the chroot environment, run the check script to verify integrity:
-
 ```bash
 bash check-chroot.sh
 ```
@@ -103,3 +103,33 @@ This will verify:
 - All scripts should be run from the directory containing these scripts
 - The environment is designed to be as close to a real system as possible
 - When exiting the chroot environment, always run the cleanup script to properly unmount filesystems
+
+## Development Conventions
+
+- Shell scripts follow standard bash practices
+- Error handling is implemented with `set -e`
+- Scripts automatically request sudo privileges if not run as root
+- Cleanup functions properly unmount filesystems in the correct order
+- Scripts provide informative output to guide users through the process
+- Environment variables are used to pass configuration between scripts
+- Scripts are designed to work with customizable root filesystem paths
+
+## Common Tasks
+
+When working with this chroot environment, you'll typically:
+
+1. Set up the environment with `chroot-manager.sh start` (which automatically handles downloading the base image if needed)
+2. Work within the chroot environment (the prompt will show `(chroot)` to indicate the environment)
+3. Exit the chroot environment
+4. Clean up with `chroot-manager.sh stop`
+
+## Troubleshooting
+
+If you encounter issues:
+1. Check that you have root privileges
+2. Verify the root filesystem exists at the expected path
+3. Run `check-chroot.sh` to verify environment integrity
+4. Use `chroot-manager.sh status` to check mount status
+5. Clean up and restart if needed
+
+Always ensure proper cleanup to avoid leaving mounted filesystems.
